@@ -17,7 +17,7 @@ class PlacesController {
     const trx = await knex.transaction();
   
     const place = {
-      image: 'fake_image',
+      image: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60',
       name,
       email,
       phone,
@@ -63,6 +63,22 @@ class PlacesController {
     }
 
     return response.json({ place, items });
+  }
+
+  async indexAsync(request: Request, response: Response) {
+    const { city, uf, items } = request.query;
+    
+    const parsedItems = String(items).split(',').map(item => Number(item.trim()));
+
+    const places = await knex('places')
+      .join('places_items', 'places.id', '=', 'places_items.place_id')
+      .whereIn('places_items.item_id', parsedItems)
+      .where('city', String(city))
+      .where('uf', String(uf))
+      .distinct()
+      .select('places.*');
+
+    return response.json(places);
   }
 }
 

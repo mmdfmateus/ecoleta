@@ -10,6 +10,7 @@ const itemsController = new ItemsController();
 routes.get('/items', itemsController.indexAsync);
 
 routes.post('/places', placesController.createAsync);
+routes.get('/places', placesController.indexAsync);
 routes.get('/places/:id', placesController.showAsync);
 
 export default routes;
